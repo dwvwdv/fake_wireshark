@@ -5,6 +5,7 @@
 
 #include <pcap.h>
 #include <winsock2.h>
+#include "data_package.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,7 +20,8 @@ public:
     ~MainWindow();
     void showNetworkCard();
     int capture();
-
+private slots:
+    void HandleMessage(data_package data);
 private:
     Ui::MainWindow *ui;
     pcap_if_t *all_device;

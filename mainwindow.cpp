@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
                 thread->setPointer(pcap_t_pointer);
                 thread->setFlag();
                 thread->start();
-                ui->actionrun_stop->setIcon(QIcon(":/icon.ico"));
+                ui->actionrun_stop->setIcon(QIcon(":/stop.png"));
                 ui->comboBox->setEnabled(false);
             }
         }
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
             thread->resetFlag();
             thread->quit();
             thread->wait();
-            ui->actionrun_stop->setIcon(QIcon(":/icon.ico"));
+            ui->actionrun_stop->setIcon(QIcon(":/play.png"));
             ui->comboBox->setEnabled(true);
             pcap_close(pcap_t_pointer);
             pcap_t_pointer = nullptr;
@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent)
             for(device = all_device;i < cb_index - 1;device = device->next,++i);
         }
     });
+
+    connect(thread,&mult_thread::send,this,&MainWindow::HandleMessage);
 }
 
 MainWindow::~MainWindow()
@@ -94,4 +96,8 @@ int MainWindow::capture(){
     }
     statusBar()->showMessage(device->name);
     return 0;
+}
+
+void MainWindow::HandleMessage(data_package data){
+    qDebug() << data.getTimeStamp() << " " << data.getInfo() << "\n";
 }
